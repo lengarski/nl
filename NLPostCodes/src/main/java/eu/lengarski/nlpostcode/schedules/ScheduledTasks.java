@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -29,8 +31,13 @@ public class ScheduledTasks {
         logger.info("task start");
         long startTime = System.currentTimeMillis();
         try {
-            Reader reader = Files.newBufferedReader(Paths.get(
-                    ClassLoader.getSystemResource("postcodes-coordinates-NL.csv").toURI()));
+            InputStream passwordInputStream =
+                    Thread.currentThread().getContextClassLoader().getResourceAsStream("postcodes-coordinates-NL.csv");
+
+            Reader reader = new InputStreamReader(passwordInputStream);
+
+//                    Files.newBufferedReader(Paths.get(
+//                    ClassLoader.getSystemResource("postcodes-coordinates-NL.csv").toURI()));
 
             CSVReader csvReader = new CSVReader(reader);
 
@@ -59,9 +66,10 @@ public class ScheduledTasks {
             logger.error(" IOException ");
         } catch (CsvException e) {
             logger.error(" CsvException ");
-        } catch (URISyntaxException e) {
-            logger.error(" URISyntaxException ");
         }
+//        catch (URISyntaxException e) {
+//            logger.error(" URISyntaxException ");
+//        }
         double timeRunning = (System.currentTimeMillis() - startTime) / 1000.;
         logger.info("task finished in " + timeRunning + " seconds");
     }

@@ -2,7 +2,9 @@ package eu.lengarski.nlpostcode.services;
 
 import eu.lengarski.nlpostcode.models.dto.DistanceDTO;
 import eu.lengarski.nlpostcode.models.dto.PostCodeDto;
+import eu.lengarski.nlpostcode.models.entity.LoggingEntity;
 import eu.lengarski.nlpostcode.models.entity.PostCodeEntity;
+import eu.lengarski.nlpostcode.repositories.LoggingRepository;
 import eu.lengarski.nlpostcode.repositories.PostCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,31 +20,43 @@ public class DistanceService {
     @Autowired
     private PostCodeRepository postCodeRepository;
 
+    @Autowired
+    private LoggingRepository loggingRepository;
+
     private final static double EARTH_RADIUS = 6371; // radius in kilometers
 
-
     public DistanceDTO getDistanceBetweenPostCodes(String startPostCode, String endPostCode) {
-
         Optional<PostCodeEntity> startDestination = postCodeRepository.findByPostCode(startPostCode);
 
+        LoggingEntity loggingEntity = new LoggingEntity();
+        loggingEntity.setStartPostcode(startPostCode);
+        loggingEntity.setEndPostCode(endPostCode);
+        loggingEntity.setTime(System.currentTimeMillis());
+
         if (!startDestination.isPresent()) {
+            loggingEntity.setStatus("Get Destination failed. There are no postcode with id " + startPostCode);
+            loggingRepository.save(loggingEntity);
             throw new RuntimeException("Post Code not found " + startPostCode);
         }
 
         Optional<PostCodeEntity> endDestination = postCodeRepository.findByPostCode(endPostCode);
 
         if (!endDestination.isPresent()) {
+            loggingEntity.setStatus("Get Destination failed. There are no postcode with id " + endPostCode);
+            loggingRepository.save(loggingEntity);
             throw new RuntimeException("Post Code not found " + endPostCode);
         }
-
 
         DistanceDTO distance = new DistanceDTO();
         distance.setStartLocation(new PostCodeDto(startDestination.get()));
         distance.setEndLocation(new PostCodeDto(endDestination.get()));
 
-
         Double distanceKm = calculateDistance(startDestination.get(), endDestination.get());
         distance.setDistance(distanceKm);
+
+        loggingEntity.setStatus("Succesfull get distance ");
+        loggingRepository.save(loggingEntity);
+
         return distance;
     }
 
