@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: nlpc
+      MYSQL_DATABASE: nlpc
+      MYSQL_USER: nlpc
+      MYSQL_PASSWORD: nlpc
+
+  backend:
+    depends_on:
+     - db
+    image: lengarski/nl:latest
+    ports:
+     - 8087:8087
+    restart: on-failure
+    environment:
+     DB_HOST: db 
+
+  web:
+    depends_on:
+    - backend
+    image: lengarski/nl-web:latest
+    ports:
+     - 8888:80
+    environment:
+      DB_HOST: db
+      BACKEND_IP: backend   
