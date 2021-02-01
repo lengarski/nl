@@ -4,8 +4,11 @@ import eu.lengarski.nlpostcode.models.dto.PostCodeDto;
 import eu.lengarski.nlpostcode.models.entity.PostCodeEntity;
 import eu.lengarski.nlpostcode.repositories.PostCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +53,15 @@ public class PostCodeService {
 
         return Optional.of(response);
 
+    }
+
+    public List<String> getAllPostcodes() {
+        return postCodeRepository.findAllPostecodes();
+    }
+
+    public List<String> findPostCodesByPostCode(String postcode, Pageable pageable) {
+        List<String> allPostcodesByPostCode = postCodeRepository.findAllPostcodesByPostCode(postcode, pageable);
+
+        return allPostcodesByPostCode;
     }
 }

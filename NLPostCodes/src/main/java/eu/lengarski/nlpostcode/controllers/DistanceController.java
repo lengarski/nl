@@ -5,14 +5,12 @@ import eu.lengarski.nlpostcode.main.NLPostCodeConstants;
 import eu.lengarski.nlpostcode.models.dto.DistanceDTO;
 import eu.lengarski.nlpostcode.services.DistanceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static eu.lengarski.nlpostcode.main.NLPostCodeConstants.API_V1;
 
 @RestController
+@CrossOrigin
 public class DistanceController {
 
     @Autowired

@@ -2,7 +2,6 @@ package eu.lengarski.nlpostcode.models.dto;
 
 import eu.lengarski.nlpostcode.models.entity.PostCodeEntity;
 
-import javax.persistence.Column;
 
 public class PostCodeDto {
 
